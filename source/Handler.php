@@ -103,10 +103,7 @@ class Handler {
 		if ( in_array( $post_type, $post_types ) ) {
 			$post_type_object->hierarchical = true;
 
-			// Sanity check.
-			if ( isset( $GLOBALS[ '_wp_post_type_features' ][ $post_type ] ) ) {
-				$GLOBALS[ '_wp_post_type_features' ][ $post_type ][ 'page-attributes' ] = true;
-			}
+			add_post_type_support( $post_type, 'page-attributes' );
 		}
 	}
 
@@ -114,7 +111,7 @@ class Handler {
 	 * @param object $labels
 	 */
 	public function __enableHierarchyFieldsForJs( $labels ) {
-		$labels->parent_item_colon = __( 'Parent Post', 'hposts' );
+		$labels->parent_item_colon = sprintf( __( 'Parent %s', 'hposts' ), $labels->name );
 		return $labels;
 	}
 
