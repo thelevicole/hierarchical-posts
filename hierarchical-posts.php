@@ -21,6 +21,7 @@ $autoload->loadArray( [
 ], 'psr-4' );
 
 // Register global constants
+HPosts\Utilities\Constants::set( 'FILE', __FILE__ );
 HPosts\Utilities\Constants::set( 'DEBUG', defined( 'WP_DEBUG' ) && WP_DEBUG );
 HPosts\Utilities\Constants::set( 'VERSION', '1.0.0' );
 HPosts\Utilities\Constants::set( 'PATH', plugin_dir_path( __FILE__ ) );

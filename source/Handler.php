@@ -4,6 +4,7 @@ namespace HPosts;
 
 use HPosts\Contracts\StaticInitiator;
 use HPosts\Utilities\Constants;
+use HPosts\Wrappers\Options;
 
 use WP_Screen, WP_Post_Type, WP_Post;
 
@@ -53,6 +54,16 @@ class Handler {
 			add_action( 'current_screen', [ $this, '__checkPrettyUrls' ] );
 		}
 
+		/**
+		 * @link https://developer.wordpress.org/reference/functions/register_activation_hook/
+		 */
+		register_activation_hook( Constants::get( 'FILE' ), [ $this, '_onActivation' ] );
+
+		/**
+		 * @link https://developer.wordpress.org/reference/functions/register_deactivation_hook/
+		 */
+		register_deactivation_hook( Constants::get( 'FILE' ), [ $this, '_onDeactivation' ] );
+
 	}
 
 	/**
@@ -92,6 +103,25 @@ class Handler {
 		}
 
 		return $final;
+	}
+
+	/**
+	 * When plugin is activated.
+	 */
+	public function _onActivation() {
+
+		/**
+		 * Force rules regen on next `init` hook.
+		 */
+		Options::update( 'flush_rules', true );
+
+	}
+
+	/**
+	 * When plugin is deactivated.
+	 */
+	public function _onDeactivation() {
+		// @todo Figure out how we can remove our custom rewrite rule.
 	}
 
 	/**
@@ -136,14 +166,28 @@ class Handler {
 	}
 
 	/**
-	 *
+	 * Modify WP core rewrite rules.
 	 */
 	public function __modifyRewriteRules() {
 
 		/**
-		 * Override the default postname regex
+		 * Override the default postname regex.
+		 * @link https://developer.wordpress.org/reference/functions/add_rewrite_tag/
 		 */
 		add_rewrite_tag( '%postname%', '(?:.+/)?([^/]+)', 'name=' );
+
+		/**
+		 * Regen rewrite rules.
+		 */
+		if ( Options::get( 'flush_rules' ) ) {
+
+			/**
+			 * @link https://developer.wordpress.org/reference/functions/flush_rewrite_rules/
+			 */
+			flush_rewrite_rules( false );
+
+			Options::update( 'flush_rules', false );
+		}
 
 	}
 
