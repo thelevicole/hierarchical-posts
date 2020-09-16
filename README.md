@@ -3,6 +3,8 @@ By default the built-in `post` post type in WordPress doesn't allow for hierarch
 
 What this plugin does is add the "Page Attributes" metabox to posts, adds parent selector to bulk/quick edit and modifies permalinks to include the parent slugs but respects the permalink structure found under `Settings > Permalinks`.
 
+Note that [`flush_rewrite_rules()`](https://developer.wordpress.org/reference/functions/flush_rewrite_rules/) is called on plugin activation to handle the new post permalink structure. 
+
 ---
 
 **Example of the post metabox**
